@@ -18,11 +18,21 @@ stops = stopwords.words('english')
 
 default_concepts_config = {"num": 20, "cache_path": "./cache/MCG", "probase": None}
 
-key_concepts = ["plant", "food", "crop", "oil", "flavor", "flavours", "taste", "food quality", "sensory property", "organ", "acid", "additive", "ingredient", "scent", "drink", "beverage", "phenolic compound", "aromatic compound"]
+key_concepts = ["plant", "food", "crop", "oil", "flavor", "flavours", "flavoring", "taste", "food quality", "organ", "acid", "ingredient", "scent", "drink", "beverage", "phenolic compound", "aromatic compound"]
 
 def log(log_file, messege):
     logging.basicConfig(filename=log_file, format="%(message)s", level=logging.INFO)
     logging.INFO(messege)
+
+class my_enchant_Dict:
+    def __init__(self, enchant_dic):
+        self.dict = enchant_dic
+    def check(self, word_or_phrase):
+        bool_list = [self.dict.check(i) for i in word_or_phrase.split(" ")]
+        if False in bool_list:
+            return False
+        else:
+            return True
 
 def init_enchant_Dict(dic="en", extra_legal_voca=True):
     # initialize enchant spell dictionary
@@ -33,7 +43,7 @@ def init_enchant_Dict(dic="en", extra_legal_voca=True):
         enchant_dic = enchant.DictWithPWL(dic, voca_path)
     else:
         enchant_dic = enchant.Dict(dic)
-    return enchant_dic
+    return my_enchant_Dict(enchant_dic)
 
 def init_probase(path, binary=False):
     if binary:
